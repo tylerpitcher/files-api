@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
-  parent: mongoose.ObjectId,
+  parentId: mongoose.ObjectId,
   name: {
     type: String,
     required: true,

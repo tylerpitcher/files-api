@@ -1,30 +1,29 @@
 const File = require('../mongo/fileModel');
 
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLNonNull, GraphQLSchema } = require('graphql');
+const { GraphQLObjectType, GraphQLID, GraphQLString } = require('graphql');
 
 const FileType = new GraphQLObjectType({
   name: 'File',
   fields: () => ({
     id: { type: GraphQLID },
+    parentId: { type: GraphQLID },
     name: { type: GraphQLString },
     location: { type: GraphQLString },
   }),
 });
 
-const query = new GraphQLObjectType({
-  name: 'Query',
-  fields: {
-    file: {
-      type: FileType,
-      args: { name: { type: GraphQLString } },
-      resolve: async (_, args) => {
-        const file = await File.findOne({ name: args.name });
-        return { id: file._id, name: file.name, location: file.location };
-      },
+const fileQueries = {
+  file: {
+    type: FileType,
+    args: { id: { type: GraphQLID } },
+    resolve: async (_, args) => {
+      const file = await File.findById(args.id);
+      return file;
     },
   },
-});
+};
 
-module.exports = new GraphQLSchema({
-  query,
-});
+module.exports = {
+  FileType,
+  fileQueries
+};
